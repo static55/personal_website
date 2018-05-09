@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "${1}" == "--fast" ]; then
+    echo fast;
+fi
+
+#ssh m3@m3.sdf.org >/dev/null 2>/dev/null <<'ENDSSH' 
+#rm -rf html/*
+#ENDSSH

@@ -1,0 +1,85 @@
+#!/bin/bash
+
+currentDir=`pwd`
+
+# find the root directory of the website.
+while [ ! -f _config.yml ]; do
+    cd ..
+    if [ "`pwd`" == "/" ]; then
+	echo "ERROR: Couldn't find _config.yml in any parent directories."
+	cd ${currentDir}
+	exit 1
+    fi
+done
+
+jekyll build --strict_front_matter
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: jekyll build failed."
+    cd ${currentDir}
+    exit 1
+fi
+
+cd _site
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: Couldn't cd to _site."
+    cd ${currentDir}
+    exit 1
+fi
+
+if [ "${1}" == "--fast" ]; then
+    tar --exclude='./assets/fonts/' --exclude='./assets/mediaelement_js' --exclude='./images' -cjf site.tar.bz2 .
+else
+    tar -cjf site.tar.bz2 .
+fi
+
+echo ""
+echo -n "Enter m3@m3.sdf.org password: "
+read password
+
+sshpass -f <(printf '%s\n' ${password}) sftp -oBatchMode=no -b ../bin/sftp_batch_cmds m3@m3.sdf.org
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: Failed to upload site.tar.bz2"
+    cd ${currentDir}
+    exit 1
+fi
+
+rm site.tar.bz2
+
+if [ "${1}" == "--fast" ]; then
+
+sshpass -f <(printf '%s\n' ${password}) ssh m3@m3.sdf.org >/dev/null 2>/dev/null << 'ENDSSH' 
+rm -rf tmp
+mkdir -p tmp/assets
+cp -R html/assets/fonts tmp/assets
+cp -R html/assets/mediaelement_js tmp/assets
+cp -R html/images tmp
+rm -rf html/*
+mv site.tar.bz2 html
+cd html
+tar -xjf site.tar.bz2
+cp -R ~/tmp/assets/fonts assets
+cp -R ~/tmp/assets/mediaelement_js assets
+cp -R ~/tmp/images .
+chmod -R g+r *
+chmod g+x `find . -type d`
+rm site.tar.bz2
+ENDSSH
+
+else
+
+sshpass -f <(printf '%s\n' ${password}) ssh m3@m3.sdf.org >/dev/null 2>/dev/null << 'ENDSSH' 
+rm -rf html/*
+mv site.tar.bz2 html
+cd html
+tar -xjf site.tar.bz2
+chmod -R g+r *
+chmod g+x `find . -type d`
+rm site.tar.bz2
+ENDSSH
+
+fi
+
+cd ${currentDir}
