@@ -11,10 +11,18 @@
 				{% capture widget_image %}{% if include.widget.image contains 'http' %}{{ include.widget.image }}{% else %}{{ site.urlimg }}{{ include.widget.image }}{% endif %}{% endcapture %}
 				<img src="{{widget_image}}" alt="" />
 				{%comment%}</noscript>{%endcomment%}
+			{% else %}
 			{% endif %}
 		</a>
 	{% endif %}
+	{% if include.widget.title %}	
 	<h2 class="font-size-h3 t10">{{ include.widget.title }}</h2>
 	<p>{{ include.widget.text }}</p>
+	{% if include.widget.image %}	
+
 	<p><a class="button tiny radius" href="{% if include.widget.url contains 'http' %}{{ include.widget.url }}{% else %}{{ site.url }}{{ site.baseurl }}{{ include.widget.url }}{% endif %}">{{ site.data.language.more }}</a></p>
+	{% else %}
+	{% endif %}
+	{% else %}
+	{% endif %}
 </div>
