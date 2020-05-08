@@ -13,8 +13,24 @@ widget2:
   image: qryptnote_thumb.png
   text: 'Client written in C++ (Qt), Server is a CGI script written in C. Both use libgcrypt.'
 widget3:
-  title: " "
-  text: ' '
+  title: "3D printed linear actuator"
+  url: 'pages/linearactuator'
+  image: linearactuatorthumb.jpg
+  text: 'OpenSCAD files, code'
+widget4:
+  title: "Pizza delivery related files"
+  url: 'http://goo.gl/ufR2Vy'
+  image: pizza.jpg
+  text: 'Maps of apartment complexes in the Tulsa area, android app'
+widget5:
+  title: "PM-25MV CNC Conversion"
+  url: 'pages/pm-25mv/'
+  image: pm-25mvthumb.jpg
+  text: 'Build progress & CAD files for mill conversion'
+widget6:
+  title: ""
+  url: ''
+  text: ''
 
 permalink: /index.html
 homepage: true
